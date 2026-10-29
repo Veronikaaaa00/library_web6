@@ -47,21 +47,21 @@ class Author {
   }
 
   Map<String, dynamic> toApiBody() => {
-        'fullName': fullName,
-        'birthYear': birthYear,
-        'country': country,
-      };
+    'fullName': fullName,
+    'birthYear': birthYear,
+    'country': country,
+  };
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'firstName': firstName,
-        'lastName': lastName,
-        'fullName': fullName,
-        'country': country,
-        'birthYear': birthYear,
-        'bio': bio,
-        'deletedAt': deletedAt?.toIso8601String(),
-      };
+    'id': id,
+    'firstName': firstName,
+    'lastName': lastName,
+    'fullName': fullName,
+    'country': country,
+    'birthYear': birthYear,
+    'bio': bio,
+    'deletedAt': deletedAt?.toIso8601String(),
+  };
 
   factory Author.fromJson(Map<String, dynamic> json) {
     var firstName = asString(json['firstName']);

@@ -19,26 +19,22 @@ class StorageMeta {
     final raw = prefs.getString(_metaKey);
     if (raw == null) {
       // Старый формат или первый запуск.
-      final hadLegacy = prefs.containsKey('books_v1') ||
+      final hadLegacy =
+          prefs.containsKey('books_v1') ||
           prefs.containsKey(_legacyMetaKey) ||
           prefs.containsKey('authors_v1');
       if (hadLegacy) {
         await _clearEntityKeys(prefs);
-        message =
-            'Формат локальных данных обновлён. Загружен начальный набор записей.';
+        message = 'Формат локальных данных обновлён. Загружен начальный набор записей.';
       }
-      await prefs.setString(
-        _metaKey,
-        jsonEncode({'version': currentVersion}),
-      );
+      await prefs.setString(_metaKey, jsonEncode({'version': currentVersion}));
     } else {
       try {
         final map = jsonDecode(raw) as Map<String, dynamic>;
         final version = (map['version'] as num?)?.toInt() ?? 0;
         if (version != currentVersion) {
           await _clearEntityKeys(prefs);
-          message =
-              'Формат локальных данных обновлён. Загружен начальный набор записей.';
+          message = 'Формат локальных данных обновлён. Загружен начальный набор записей.';
           await prefs.setString(
             _metaKey,
             jsonEncode({'version': currentVersion}),

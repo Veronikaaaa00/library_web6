@@ -40,15 +40,19 @@ class _ReaderDetailScreenState extends State<ReaderDetailScreen> {
           return ListView(
             padding: const EdgeInsets.all(24),
             children: [
-              Text(r.fullName,
-                  style: Theme.of(context).textTheme.headlineMedium),
+              Text(
+                r.fullName,
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
               const SizedBox(height: 8),
               Text('Email: ${r.email}'),
               Text('Телефон: ${r.phone}'),
               const SizedBox(height: 12),
               Text('Билет', style: Theme.of(context).textTheme.titleMedium),
               Text('Номер: ${r.card.number}'),
-              Text('Выдан: ${r.card.issuedAt.toIso8601String().split('T').first}'),
+              Text(
+                'Выдан: ${r.card.issuedAt.toIso8601String().split('T').first}',
+              ),
               Text(
                 'До: ${r.card.expiresAt.toIso8601String().split('T').first}',
               ),

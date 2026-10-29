@@ -38,8 +38,7 @@ class _AuthorFormScreenState extends State<AuthorFormScreen> {
 
   Future<void> _load() async {
     if (widget.isEditing) {
-      _existing =
-          await context.read<AuthorRepository>().findById(widget.id!);
+      _existing = await context.read<AuthorRepository>().findById(widget.id!);
       final a = _existing;
       if (a != null) {
         _firstName.text = a.firstName;

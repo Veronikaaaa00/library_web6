@@ -98,7 +98,9 @@ class _BookFormScreenState extends State<BookFormScreen> {
     final filtered = _authors.where((a) => ids.contains(a.id)).toList();
     // Сохраняем уже выбранных, даже если они вне каскада.
     final selected = _authors.where((a) => _authorIds.contains(a.id));
-    final map = {for (final a in [...filtered, ...selected]) a.id: a};
+    final map = {
+      for (final a in [...filtered, ...selected]) a.id: a,
+    };
     return map.values.toList();
   }
 
@@ -111,7 +113,9 @@ class _BookFormScreenState extends State<BookFormScreen> {
     if (ids.isEmpty) return _genres;
     final filtered = _genres.where((g) => ids.contains(g.id)).toList();
     final selected = _genres.where((g) => _genreIds.contains(g.id));
-    final map = {for (final g in [...filtered, ...selected]) g.id: g};
+    final map = {
+      for (final g in [...filtered, ...selected]) g.id: g,
+    };
     return map.values.toList();
   }
 
@@ -249,15 +253,21 @@ class _BookFormScreenState extends State<BookFormScreen> {
           validator: (v) =>
               _isbnUniqueError ?? _server('isbn') ?? Validators.isbn(v),
         ),
-        TextFormField(
-          controller: _year,
-          decoration: InputDecoration(
-            labelText: 'Год',
-            border: const OutlineInputBorder(),
-            errorText: _server('year'),
+        Align(
+          alignment: Alignment.centerLeft,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 160),
+            child: TextFormField(
+              controller: _year,
+              decoration: InputDecoration(
+                labelText: 'Год издания',
+                border: const OutlineInputBorder(),
+                errorText: _server('year'),
+              ),
+              keyboardType: TextInputType.number,
+              validator: (v) => _server('year') ?? Validators.year(v),
+            ),
           ),
-          keyboardType: TextInputType.number,
-          validator: (v) => _server('year') ?? Validators.year(v),
         ),
         TextFormField(
           controller: _pages,
@@ -290,8 +300,7 @@ class _BookFormScreenState extends State<BookFormScreen> {
           ),
           keyboardType: TextInputType.number,
           validator: (v) {
-            final base =
-                Validators.nonNegativeInt(v, label: 'Доступно');
+            final base = Validators.nonNegativeInt(v, label: 'Доступно');
             if (base != null) return base;
             final avail = int.parse(v!.trim());
             final total = int.tryParse(_copiesTotal.text.trim()) ?? 0;
@@ -327,8 +336,9 @@ class _BookFormScreenState extends State<BookFormScreen> {
               .map((a) => IdOption(id: a.id, label: a.fullName))
               .toList(),
           onChanged: (v) => setState(() => _authorIds = v),
-          validator: (v) =>
-              (v == null || v.isEmpty) ? 'Выберите хотя бы одного автора' : null,
+          validator: (v) => (v == null || v.isEmpty)
+              ? 'Выберите хотя бы одного автора'
+              : null,
         ),
         IdMultiSelectField(
           key: ValueKey('genres-$_publisherId-${_cascadedGenres.length}'),

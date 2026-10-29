@@ -105,9 +105,8 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
             children: [
               Text(
                 book.title,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                style: Theme.of(context).textTheme.headlineMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
               if (book.isDeleted) ...[
                 const SizedBox(height: 8),
@@ -138,8 +137,7 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
                     children: [
                       if (canManage)
                         FilledButton.tonalIcon(
-                          onPressed: () =>
-                              context.go('/books/${book.id}/edit'),
+                          onPressed: () => context.go('/books/${book.id}/edit'),
                           icon: const Icon(Icons.edit),
                           label: const Text('Изменить'),
                         ),
@@ -168,13 +166,11 @@ class _BookDetailScreenState extends State<BookDetailScreen> {
     final messenger = ScaffoldMessenger.of(context);
     try {
       await context.read<LoanRepository>().createLoan(
-            readerId: 1,
-            bookId: book.id,
-          );
-      if (!mounted) return;
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Выдача оформлена')),
+        readerId: 1,
+        bookId: book.id,
       );
+      if (!mounted) return;
+      messenger.showSnackBar(const SnackBar(content: Text('Выдача оформлена')));
       setState(() => _future = _load());
     } on ConflictException catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.message)));

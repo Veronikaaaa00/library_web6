@@ -28,8 +28,7 @@ import 'screens/users_screen.dart';
 import 'state/auth_notifier.dart';
 
 GoRouter buildRouter(AuthNotifier auth) {
-  String? requireRole(Role minimum) =>
-      auth.has(minimum) ? null : '/forbidden';
+  String? requireRole(Role minimum) => auth.has(minimum) ? null : '/forbidden';
 
   return GoRouter(
     refreshListenable: auth,
@@ -48,9 +47,8 @@ GoRouter buildRouter(AuthNotifier auth) {
     routes: [
       GoRoute(
         path: '/login',
-        builder: (context, state) => LoginScreen(
-          from: state.uri.queryParameters['from'],
-        ),
+        builder: (context, state) =>
+            LoginScreen(from: state.uri.queryParameters['from']),
       ),
       GoRoute(
         path: '/register',

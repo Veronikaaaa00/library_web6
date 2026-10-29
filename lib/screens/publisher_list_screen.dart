@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../core/breakpoints.dart';
 import '../core/permissions.dart';
 import '../models/publisher.dart';
 import '../models/publisher_query.dart';
@@ -37,8 +38,7 @@ class _PublisherListScreenState extends State<PublisherListScreen> {
   void _go(PublisherQuery query) => context.go(query.toLocation());
 
   Future<void> _softDelete(Publisher p) async {
-    final msg =
-        await context.read<PublisherListNotifier>().softDelete(p.id);
+    final msg = await context.read<PublisherListNotifier>().softDelete(p.id);
     if (msg != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
     }
@@ -47,10 +47,11 @@ class _PublisherListScreenState extends State<PublisherListScreen> {
   @override
   Widget build(BuildContext context) {
     final notifier = context.watch<PublisherListNotifier>();
-    final canManage =
-        Permissions.canManageCatalog(context.watch<AuthNotifier>().role);
+    final canManage = Permissions.canManageCatalog(
+      context.watch<AuthNotifier>().role,
+    );
     final query = notifier.query;
-    final wide = MediaQuery.sizeOf(context).width >= 600;
+    final wide = Breakpoints.isWide(context);
 
     return AppScaffold(
       title: 'Издательства',
@@ -161,8 +162,7 @@ class _PublisherListScreenState extends State<PublisherListScreen> {
       return [
         IconButton(
           tooltip: 'Восстановить',
-          onPressed: () =>
-              context.read<PublisherListNotifier>().restore(p.id),
+          onPressed: () => context.read<PublisherListNotifier>().restore(p.id),
           icon: const Icon(Icons.restore),
         ),
       ];

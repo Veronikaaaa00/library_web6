@@ -35,9 +35,9 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() => _saving = true);
     try {
       await context.read<AuthNotifier>().login(
-            _username.text.trim(),
-            _password.text,
-          );
+        _username.text.trim(),
+        _password.text,
+      );
       if (!mounted) return;
       final dest = widget.from;
       if (dest != null && dest.isNotEmpty && dest != '/login') {
@@ -99,8 +99,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         labelText: 'Пароль',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (v) =>
-                          Validators.required(v, label: 'Пароль'),
+                      validator: (v) => Validators.required(v, label: 'Пароль'),
                       onFieldSubmitted: (_) => _submit(),
                     ),
                     if (_error != null) ...[
@@ -124,9 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           : const Text('Войти'),
                     ),
                     TextButton(
-                      onPressed: _saving
-                          ? null
-                          : () => context.go('/register'),
+                      onPressed: _saving ? null : () => context.go('/register'),
                       child: const Text('Регистрация'),
                     ),
                   ],

@@ -56,9 +56,8 @@ class _AuthorDetailScreenState extends State<AuthorDetailScreen> {
             children: [
               Text(
                 author.fullName,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+                style: Theme.of(context).textTheme.headlineMedium
+                    ?.copyWith(fontWeight: FontWeight.w700),
               ),
               if (author.isDeleted) ...[
                 const SizedBox(height: 8),
@@ -78,8 +77,7 @@ class _AuthorDetailScreenState extends State<AuthorDetailScreen> {
                 spacing: 12,
                 children: [
                   FilledButton.tonalIcon(
-                    onPressed: () =>
-                        context.go('/authors/${author.id}/edit'),
+                    onPressed: () => context.go('/authors/${author.id}/edit'),
                     icon: const Icon(Icons.edit),
                     label: const Text('Изменить'),
                   ),

@@ -11,13 +11,13 @@ import 'related_records_exception.dart';
 
 class PersistentPublisherRepository implements PublisherRepository {
   PersistentPublisherRepository(SharedPreferences prefs, this._books)
-      : _store = JsonListStore<Publisher>(
-          prefs: prefs,
-          key: 'publishers_v2',
-          fromJson: Publisher.fromJson,
-          toJson: (p) => p.toJson(),
-          seed: seedPublishers,
-        ) {
+    : _store = JsonListStore<Publisher>(
+        prefs: prefs,
+        key: 'publishers_v2',
+        fromJson: Publisher.fromJson,
+        toJson: (p) => p.toJson(),
+        seed: seedPublishers,
+      ) {
     _publishers = _store.load();
     _nextId = _publishers.fold<int>(0, (m, p) => p.id > m ? p.id : m) + 1;
   }
@@ -32,8 +32,9 @@ class PersistentPublisherRepository implements PublisherRepository {
   @override
   Future<PageResult<Publisher>> find(PublisherQuery q) async {
     await Future.delayed(const Duration(milliseconds: 80));
-    var rows =
-        _publishers.where((p) => q.includeDeleted || !p.isDeleted).toList();
+    var rows = _publishers
+        .where((p) => q.includeDeleted || !p.isDeleted)
+        .toList();
     if (q.search.trim().isNotEmpty) {
       final needle = q.search.trim().toLowerCase();
       rows = rows

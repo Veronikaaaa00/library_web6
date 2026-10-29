@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../core/breakpoints.dart';
 import '../models/reader.dart';
 import '../models/reader_query.dart';
 import '../state/reader_list_notifier.dart';
@@ -38,7 +39,7 @@ class _ReaderListScreenState extends State<ReaderListScreen> {
   Widget build(BuildContext context) {
     final notifier = context.watch<ReaderListNotifier>();
     final query = notifier.query;
-    final wide = MediaQuery.sizeOf(context).width >= 600;
+    final wide = Breakpoints.isWide(context);
 
     return AppScaffold(
       title: 'Читатели',
@@ -62,15 +63,13 @@ class _ReaderListScreenState extends State<ReaderListScreen> {
                 FilterChip(
                   label: const Text('Активный билет'),
                   selected: query.cardActive == true,
-                  onSelected: (v) => _go(
-                    query.copyWith(cardActive: v ? true : null),
-                  ),
+                  onSelected: (v) =>
+                      _go(query.copyWith(cardActive: v ? true : null)),
                 ),
                 FilterChip(
                   label: const Text('Показать удалённые'),
                   selected: query.includeDeleted,
-                  onSelected: (v) =>
-                      _go(query.copyWith(includeDeleted: v)),
+                  onSelected: (v) => _go(query.copyWith(includeDeleted: v)),
                 ),
               ],
             ),
@@ -173,8 +172,7 @@ class _ReaderListScreenState extends State<ReaderListScreen> {
         ),
         IconButton(
           tooltip: 'Удалить навсегда',
-          onPressed: () =>
-              context.read<ReaderListNotifier>().hardDelete(r.id),
+          onPressed: () => context.read<ReaderListNotifier>().hardDelete(r.id),
           icon: const Icon(Icons.delete_forever),
         ),
       ];

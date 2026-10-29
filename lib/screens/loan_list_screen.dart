@@ -45,9 +45,8 @@ class _LoanListScreenState extends State<LoanListScreen> {
       setState(() => _future = _load());
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
@@ -55,15 +54,13 @@ class _LoanListScreenState extends State<LoanListScreen> {
     try {
       await context.read<LoanRepository>().returnLoan(loan.id);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Выдача закрыта')),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Выдача закрыта')));
       setState(() => _future = _load());
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 
@@ -102,8 +99,7 @@ class _LoanListScreenState extends State<LoanListScreen> {
                 trailing: Wrap(
                   spacing: 4,
                   children: [
-                    if (loan.isActive &&
-                        Permissions.canRenewOwnLoan(auth.role))
+                    if (loan.isActive && Permissions.canRenewOwnLoan(auth.role))
                       TextButton(
                         onPressed: () => _renew(loan),
                         child: const Text('Продлить'),

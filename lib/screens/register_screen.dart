@@ -73,17 +73,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _saving = true);
     try {
       await context.read<AuthNotifier>().register(
-            username: _username.text.trim(),
-            password: _password.text,
-            email: _email.text.trim(),
-            fullName: _fullName.text.trim(),
-          );
+        username: _username.text.trim(),
+        password: _password.text,
+        email: _email.text.trim(),
+        fullName: _fullName.text.trim(),
+      );
       if (!mounted) return;
       context.go('/');
     } on ValidationException catch (e) {
-      setState(() => _error = e.errors.values.join('; ').isEmpty
-          ? e.message
-          : e.errors.values.join('; '));
+      setState(
+        () => _error = e.errors.values.join('; ').isEmpty
+            ? e.message
+            : e.errors.values.join('; '),
+      );
     } on ApiException catch (e) {
       setState(() => _error = e.message);
     } catch (e) {
@@ -135,8 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         labelText: 'ФИО',
                         border: OutlineInputBorder(),
                       ),
-                      validator: (v) =>
-                          Validators.required(v, label: 'ФИО'),
+                      validator: (v) => Validators.required(v, label: 'ФИО'),
                     ),
                     const SizedBox(height: 12),
                     TextFormField(
@@ -180,8 +181,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           : const Text('Зарегистрироваться'),
                     ),
                     TextButton(
-                      onPressed:
-                          _saving ? null : () => context.go('/login'),
+                      onPressed: _saving ? null : () => context.go('/login'),
                       child: const Text('Уже есть аккаунт'),
                     ),
                   ],

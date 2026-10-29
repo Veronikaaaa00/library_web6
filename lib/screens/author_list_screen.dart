@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../core/breakpoints.dart';
 import '../core/permissions.dart';
 import '../data/seed_data.dart';
 import '../models/author.dart';
@@ -28,8 +29,7 @@ class _AuthorListScreenState extends State<AuthorListScreen> {
 
   static final _countries = {
     for (final author in seedAuthors) author.country,
-  }.toList()
-    ..sort();
+  }.toList()..sort();
 
   @override
   void didChangeDependencies() {
@@ -123,10 +123,11 @@ class _AuthorListScreenState extends State<AuthorListScreen> {
   @override
   Widget build(BuildContext context) {
     final notifier = context.watch<AuthorListNotifier>();
-    final canManage =
-        Permissions.canManageCatalog(context.watch<AuthNotifier>().role);
+    final canManage = Permissions.canManageCatalog(
+      context.watch<AuthNotifier>().role,
+    );
     final query = notifier.query;
-    final wide = MediaQuery.sizeOf(context).width >= 600;
+    final wide = Breakpoints.isWide(context);
 
     return AppScaffold(
       title: 'Авторы',

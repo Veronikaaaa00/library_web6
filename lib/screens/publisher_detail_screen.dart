@@ -22,10 +22,10 @@ class _PublisherDetailScreenState extends State<PublisherDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _future =
-        context.read<PublisherRepository>().findById(widget.publisherId);
-    _booksCount =
-        context.read<BookRepository>().countByPublisher(widget.publisherId);
+    _future = context.read<PublisherRepository>().findById(widget.publisherId);
+    _booksCount = context.read<BookRepository>().countByPublisher(
+      widget.publisherId,
+    );
   }
 
   @override
@@ -52,9 +52,8 @@ class _PublisherDetailScreenState extends State<PublisherDetailScreen> {
               const SizedBox(height: 8),
               FutureBuilder<int>(
                 future: _booksCount,
-                builder: (context, snap) => Text(
-                  'Связанных книг: ${snap.data ?? '…'}',
-                ),
+                builder: (context, snap) =>
+                    Text('Связанных книг: ${snap.data ?? '…'}'),
               ),
               const SizedBox(height: 16),
               FilledButton.tonalIcon(

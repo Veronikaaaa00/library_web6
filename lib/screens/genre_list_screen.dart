@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../core/breakpoints.dart';
 import '../core/permissions.dart';
 import '../models/genre.dart';
 import '../models/genre_query.dart';
@@ -46,10 +47,11 @@ class _GenreListScreenState extends State<GenreListScreen> {
   @override
   Widget build(BuildContext context) {
     final notifier = context.watch<GenreListNotifier>();
-    final canManage =
-        Permissions.canManageCatalog(context.watch<AuthNotifier>().role);
+    final canManage = Permissions.canManageCatalog(
+      context.watch<AuthNotifier>().role,
+    );
     final query = notifier.query;
-    final wide = MediaQuery.sizeOf(context).width >= 600;
+    final wide = Breakpoints.isWide(context);
 
     return AppScaffold(
       title: 'Жанры',
@@ -75,8 +77,7 @@ class _GenreListScreenState extends State<GenreListScreen> {
                 FilterChip(
                   label: const Text('Показать удалённые'),
                   selected: query.includeDeleted,
-                  onSelected: (v) =>
-                      _go(query.copyWith(includeDeleted: v)),
+                  onSelected: (v) => _go(query.copyWith(includeDeleted: v)),
                 ),
               ],
             ),
@@ -167,8 +168,9 @@ class _GenreListScreenState extends State<GenreListScreen> {
         IconButton(
           tooltip: 'Удалить навсегда',
           onPressed: () async {
-            final err =
-                await context.read<GenreListNotifier>().hardDelete(g.id);
+            final err = await context.read<GenreListNotifier>().hardDelete(
+              g.id,
+            );
             if (err != null && mounted) {
               ScaffoldMessenger.of(context)
                   .showSnackBar(SnackBar(content: Text(err)));

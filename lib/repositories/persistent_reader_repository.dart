@@ -9,13 +9,13 @@ import 'reader_repository.dart';
 
 class PersistentReaderRepository implements ReaderRepository {
   PersistentReaderRepository(SharedPreferences prefs)
-      : _store = JsonListStore<Reader>(
-          prefs: prefs,
-          key: 'readers_v2',
-          fromJson: Reader.fromJson,
-          toJson: (r) => r.toJson(),
-          seed: seedReaders,
-        ) {
+    : _store = JsonListStore<Reader>(
+        prefs: prefs,
+        key: 'readers_v2',
+        fromJson: Reader.fromJson,
+        toJson: (r) => r.toJson(),
+        seed: seedReaders,
+      ) {
     _readers = _store.load();
     _nextId = _readers.fold<int>(0, (m, r) => r.id > m ? r.id : m) + 1;
   }
@@ -29,8 +29,7 @@ class PersistentReaderRepository implements ReaderRepository {
   @override
   Future<PageResult<Reader>> find(ReaderQuery q) async {
     await Future.delayed(const Duration(milliseconds: 100));
-    var rows =
-        _readers.where((r) => q.includeDeleted || !r.isDeleted).toList();
+    var rows = _readers.where((r) => q.includeDeleted || !r.isDeleted).toList();
     if (q.search.trim().isNotEmpty) {
       final needle = q.search.trim().toLowerCase();
       rows = rows
@@ -49,8 +48,9 @@ class PersistentReaderRepository implements ReaderRepository {
     rows.sort((a, b) {
       final result = switch (q.sortField) {
         'email' => a.email.toLowerCase().compareTo(b.email.toLowerCase()),
-        'firstName' =>
-          a.firstName.toLowerCase().compareTo(b.firstName.toLowerCase()),
+        'firstName' => a.firstName.toLowerCase().compareTo(
+          b.firstName.toLowerCase(),
+        ),
         'card' => a.card.number.compareTo(b.card.number),
         _ => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
       };

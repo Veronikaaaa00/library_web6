@@ -19,20 +19,20 @@ class AppUser {
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) => AppUser(
-        id: asInt(json['id']),
-        username: asString(json['username']),
-        fullName: asString(json['fullName']),
-        email: asString(json['email']),
-        role: Role.fromApi(asString(json['role'])),
-        readerId: json['readerId'] == null ? null : asInt(json['readerId']),
-      );
+    id: asInt(json['id']),
+    username: asString(json['username']),
+    fullName: asString(json['fullName']),
+    email: asString(json['email']),
+    role: Role.fromApi(asString(json['role'])),
+    readerId: json['readerId'] == null ? null : asInt(json['readerId']),
+  );
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'username': username,
-        'fullName': fullName,
-        'email': email,
-        'role': role.apiValue,
-        'readerId': readerId,
-      };
+    'id': id,
+    'username': username,
+    'fullName': fullName,
+    'email': email,
+    'role': role.apiValue,
+    'readerId': readerId,
+  };
 }

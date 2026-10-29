@@ -40,8 +40,9 @@ class _UsersScreenState extends State<UsersScreen> {
               child: Text(
                 role.label,
                 style: TextStyle(
-                  fontWeight:
-                      role == user.role ? FontWeight.bold : FontWeight.normal,
+                  fontWeight: role == user.role
+                      ? FontWeight.bold
+                      : FontWeight.normal,
                 ),
               ),
             ),
@@ -52,15 +53,14 @@ class _UsersScreenState extends State<UsersScreen> {
     try {
       await context.read<UserRepository>().updateRole(user.id, next);
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Роль изменена на ${next.label}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Роль изменена на ${next.label}')));
       setState(() => _future = _load());
     } on ApiException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message)),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.message)));
     }
   }
 

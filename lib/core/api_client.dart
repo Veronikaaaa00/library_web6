@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+import '../state/network_status.dart';
 import 'api_exceptions.dart';
 import 'auth_token_store.dart';
 import 'config.dart';
@@ -12,6 +13,7 @@ Dio buildDio({
   AuthTokenStore? tokenStore,
   TokenRefresher? onRefresh,
   LogoutCallback? onLogout,
+  NetworkStatus? network,
 }) {
   final dio = Dio(
     BaseOptions(
@@ -37,6 +39,7 @@ Dio buildDio({
       },
       onResponse: (response, handler) {
         final status = response.statusCode ?? 0;
+        network?.markOnline();
         if (kDebugMode) {
           debugPrint(
             '[API] ← ${response.requestOptions.method} '
@@ -57,10 +60,19 @@ Dio buildDio({
         return handler.next(response);
       },
       onError: (error, handler) {
-        if (kDebugMode) {
-          debugPrint(
-            '[API] сбой ${error.requestOptions.uri}: ${error.type}',
+        final isNetwork =
+            error.type == DioExceptionType.connectionError ||
+            error.type == DioExceptionType.connectionTimeout ||
+            error.type == DioExceptionType.receiveTimeout ||
+            error.type == DioExceptionType.sendTimeout ||
+            (error.type == DioExceptionType.unknown && error.response == null);
+        if (isNetwork) {
+          network?.markOffline(
+            'Нет соединения с сервером. Проверьте сеть и нажмите «Повторить».',
           );
+        }
+        if (kDebugMode) {
+          debugPrint('[API] сбой ${error.requestOptions.uri}: ${error.type}');
         }
         return handler.next(error);
       },
@@ -110,7 +122,8 @@ Dio buildDio({
           return handler.next(error);
         }
         final attempt = (req.extra['retryAttempt'] as int?) ?? 0;
-        final isNetwork = error.type == DioExceptionType.connectionError ||
+        final isNetwork =
+            error.type == DioExceptionType.connectionError ||
             error.type == DioExceptionType.connectionTimeout ||
             error.type == DioExceptionType.receiveTimeout ||
             error.type == DioExceptionType.sendTimeout;
@@ -119,9 +132,7 @@ Dio buildDio({
         }
         final next = attempt + 1;
         await Future.delayed(Duration(milliseconds: 300 * next));
-        final opts = req.copyWith(
-          extra: {...req.extra, 'retryAttempt': next},
-        );
+        final opts = req.copyWith(extra: {...req.extra, 'retryAttempt': next});
         try {
           final response = await dio.fetch(opts);
           return handler.resolve(response);

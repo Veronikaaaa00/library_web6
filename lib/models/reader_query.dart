@@ -28,8 +28,9 @@ class ReaderQuery {
   }) {
     return ReaderQuery(
       search: search ?? this.search,
-      cardActive:
-          identical(cardActive, _unset) ? this.cardActive : cardActive as bool?,
+      cardActive: identical(cardActive, _unset)
+          ? this.cardActive
+          : cardActive as bool?,
       sortField: sortField ?? this.sortField,
       sortAscending: sortAscending ?? this.sortAscending,
       page: page ?? 1,
@@ -50,8 +51,9 @@ class ReaderQuery {
     return ReaderQuery(
       search: q['search'] ?? '',
       cardActive: cardActive,
-      sortField:
-          parts.isNotEmpty && parts.first.isNotEmpty ? parts.first : 'lastName',
+      sortField: parts.isNotEmpty && parts.first.isNotEmpty
+          ? parts.first
+          : 'lastName',
       sortAscending: parts.length < 2 || parts[1] != 'desc',
       page: int.tryParse(q['page'] ?? '') ?? 1,
       size: int.tryParse(q['size'] ?? '') ?? 10,
@@ -87,12 +89,12 @@ class ReaderQuery {
 
   @override
   int get hashCode => Object.hash(
-        search,
-        cardActive,
-        sortField,
-        sortAscending,
-        page,
-        size,
-        includeDeleted,
-      );
+    search,
+    cardActive,
+    sortField,
+    sortAscending,
+    page,
+    size,
+    includeDeleted,
+  );
 }

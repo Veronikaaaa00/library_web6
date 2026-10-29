@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import '../core/breakpoints.dart';
 import '../core/permissions.dart';
 import '../models/role.dart';
 import '../state/auth_notifier.dart';
@@ -22,10 +23,15 @@ class AppScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final location =
-        GoRouter.of(context).routeInformationProvider.value.uri.path;
+    final location = GoRouter.of(context)
+        .routeInformationProvider
+        .value
+        .uri
+        .path;
     final auth = context.watch<AuthNotifier>();
     final destinations = _destinations(auth.role);
+    final narrow = Breakpoints.isNarrow(context);
+    final selected = _selectedIndex(location, destinations);
 
     return Scaffold(
       appBar: AppBar(
@@ -35,9 +41,14 @@ class AppScaffold extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Center(
-                child: Text(
-                  '${auth.user!.fullName} (${auth.user!.role.label})',
-                  style: Theme.of(context).textTheme.bodyMedium,
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 220),
+                  child: Text(
+                    '${auth.user!.fullName} (${auth.user!.role.label})',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                  ),
                 ),
               ),
             ),
@@ -52,31 +63,45 @@ class AppScaffold extends StatelessWidget {
           ...?actions,
         ],
       ),
-      drawer: NavigationDrawer(
-        selectedIndex: _selectedIndex(location, destinations),
-        onDestinationSelected: (index) {
-          Navigator.of(context).pop();
-          context.go(destinations[index].path);
-        },
-        children: [
-          const DrawerHeader(
-            child: Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
-                'Библиотека',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-              ),
+      drawer: narrow
+          ? null
+          : NavigationDrawer(
+              selectedIndex: selected,
+              onDestinationSelected: (index) {
+                Navigator.of(context).pop();
+                context.go(destinations[index].path);
+              },
+              children: [
+                const DrawerHeader(
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Text(
+                      'Библиотека',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+                for (final d in destinations)
+                  NavigationDrawerDestination(
+                    icon: Icon(d.icon),
+                    selectedIcon: Icon(d.selectedIcon),
+                    label: Text(d.label),
+                  ),
+              ],
             ),
-          ),
-          for (final d in destinations)
-            NavigationDrawerDestination(
-              icon: Icon(d.icon),
-              selectedIcon: Icon(d.selectedIcon),
-              label: Text(d.label),
-            ),
-        ],
-      ),
-      floatingActionButton: floatingActionButton,
+      bottomNavigationBar: narrow
+          ? _BottomNav(
+              destinations: destinations,
+              selectedIndex: selected,
+              location: location,
+            )
+          : null,
+      floatingActionButton: floatingActionButton == null
+          ? null
+          : Tooltip(message: 'Создать', child: floatingActionButton!),
       body: body,
     );
   }
@@ -90,12 +115,7 @@ class AppScaffold extends StatelessWidget {
         Icons.menu_book_outlined,
         Icons.menu_book,
       ),
-      const _NavItem(
-        '/authors',
-        'Авторы',
-        Icons.person_outline,
-        Icons.person,
-      ),
+      const _NavItem('/authors', 'Авторы', Icons.person_outline, Icons.person),
       const _NavItem(
         '/genres',
         'Жанры',
@@ -158,6 +178,92 @@ class AppScaffold extends StatelessWidget {
       }
     }
     return 0;
+  }
+}
+
+class _BottomNav extends StatelessWidget {
+  const _BottomNav({
+    required this.destinations,
+    required this.selectedIndex,
+    required this.location,
+  });
+
+  final List<_NavItem> destinations;
+  final int selectedIndex;
+  final String location;
+
+  static const _primaryCount = 4;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = destinations.take(_primaryCount).toList();
+    final hasMore = destinations.length > _primaryCount;
+    final inMore = selectedIndex >= _primaryCount;
+    final barIndex = inMore ? primary.length : selectedIndex;
+
+    final maxIndex = hasMore ? primary.length : primary.length - 1;
+    return NavigationBar(
+      selectedIndex: barIndex.clamp(0, maxIndex < 0 ? 0 : maxIndex),
+      onDestinationSelected: (index) {
+        if (hasMore && index == primary.length) {
+          _openMore(context);
+          return;
+        }
+        context.go(primary[index].path);
+      },
+      destinations: [
+        for (final d in primary)
+          NavigationDestination(
+            icon: Icon(d.icon),
+            selectedIcon: Icon(d.selectedIcon),
+            label: d.label,
+            tooltip: d.label,
+          ),
+        if (hasMore)
+          const NavigationDestination(
+            icon: Icon(Icons.more_horiz),
+            selectedIcon: Icon(Icons.more_horiz),
+            label: 'Ещё',
+            tooltip: 'Другие разделы',
+          ),
+      ],
+    );
+  }
+
+  Future<void> _openMore(BuildContext context) async {
+    final rest = destinations.skip(_primaryCount).toList();
+    final chosen = await showModalBottomSheet<_NavItem>(
+      context: context,
+      showDragHandle: true,
+      constraints: const BoxConstraints(maxWidth: 480),
+      builder: (context) {
+        return SafeArea(
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              const ListTile(
+                title: Text(
+                  'Другие разделы',
+                  style: TextStyle(fontWeight: FontWeight.w700),
+                ),
+              ),
+              for (final d in rest)
+                ListTile(
+                  leading: Icon(d.icon),
+                  title: Text(d.label),
+                  selected:
+                      location == d.path ||
+                      (d.path != '/' && location.startsWith(d.path)),
+                  onTap: () => Navigator.pop(context, d),
+                ),
+            ],
+          ),
+        );
+      },
+    );
+    if (chosen != null && context.mounted) {
+      context.go(chosen.path);
+    }
   }
 }
 

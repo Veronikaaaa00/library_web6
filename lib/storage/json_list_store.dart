@@ -37,9 +37,6 @@ class JsonListStore<T> {
   }
 
   Future<void> save(List<T> items) async {
-    await prefs.setString(
-      key,
-      jsonEncode(items.map(toJson).toList()),
-    );
+    await prefs.setString(key, jsonEncode(items.map(toJson).toList()));
   }
 }

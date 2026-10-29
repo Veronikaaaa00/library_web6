@@ -11,13 +11,13 @@ import 'related_records_exception.dart';
 
 class PersistentGenreRepository implements GenreRepository {
   PersistentGenreRepository(SharedPreferences prefs, this._books)
-      : _store = JsonListStore<Genre>(
-          prefs: prefs,
-          key: 'genres_v2',
-          fromJson: Genre.fromJson,
-          toJson: (g) => g.toJson(),
-          seed: seedGenres,
-        ) {
+    : _store = JsonListStore<Genre>(
+        prefs: prefs,
+        key: 'genres_v2',
+        fromJson: Genre.fromJson,
+        toJson: (g) => g.toJson(),
+        seed: seedGenres,
+      ) {
     _genres = _store.load();
     _nextId = _genres.fold<int>(0, (m, g) => g.id > m ? g.id : m) + 1;
   }

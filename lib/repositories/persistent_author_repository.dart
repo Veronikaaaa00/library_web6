@@ -9,13 +9,13 @@ import 'author_repository.dart';
 
 class PersistentAuthorRepository implements AuthorRepository {
   PersistentAuthorRepository(SharedPreferences prefs)
-      : _store = JsonListStore<Author>(
-          prefs: prefs,
-          key: 'authors_v2',
-          fromJson: Author.fromJson,
-          toJson: (a) => a.toJson(),
-          seed: seedAuthors,
-        ) {
+    : _store = JsonListStore<Author>(
+        prefs: prefs,
+        key: 'authors_v2',
+        fromJson: Author.fromJson,
+        toJson: (a) => a.toJson(),
+        seed: seedAuthors,
+      ) {
     _authors = _store.load();
     _nextId = _authors.fold<int>(0, (m, a) => a.id > m ? a.id : m) + 1;
   }
@@ -33,8 +33,7 @@ class PersistentAuthorRepository implements AuthorRepository {
       throw StateError('Сбой источника данных');
     }
 
-    var rows =
-        _authors.where((a) => q.includeDeleted || !a.isDeleted).toList();
+    var rows = _authors.where((a) => q.includeDeleted || !a.isDeleted).toList();
 
     if (q.search.trim().isNotEmpty) {
       final needle = q.search.trim().toLowerCase();
@@ -62,8 +61,9 @@ class PersistentAuthorRepository implements AuthorRepository {
       final result = switch (q.sortField) {
         'birthYear' => a.birthYear.compareTo(b.birthYear),
         'country' => a.country.toLowerCase().compareTo(b.country.toLowerCase()),
-        'firstName' =>
-          a.firstName.toLowerCase().compareTo(b.firstName.toLowerCase()),
+        'firstName' => a.firstName.toLowerCase().compareTo(
+          b.firstName.toLowerCase(),
+        ),
         _ => a.lastName.toLowerCase().compareTo(b.lastName.toLowerCase()),
       };
       return q.sortAscending ? result : -result;

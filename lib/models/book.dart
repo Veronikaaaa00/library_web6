@@ -63,22 +63,22 @@ class Book {
 
   /// Тело для POST/PUT по контракту API.
   Map<String, dynamic> toApiBody() => {
-        'title': title,
-        'isbn': isbn,
-        'year': year,
-        'pages': pages,
-        'publisherId': publisherId,
-        'authorIds': authorIds,
-        'genreIds': genreIds,
-        'copiesTotal': copiesTotal,
-      };
+    'title': title,
+    'isbn': isbn,
+    'year': year,
+    'pages': pages,
+    'publisherId': publisherId,
+    'authorIds': authorIds,
+    'genreIds': genreIds,
+    'copiesTotal': copiesTotal,
+  };
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        ...toApiBody(),
-        'copiesAvailable': copiesAvailable,
-        'deletedAt': deletedAt?.toIso8601String(),
-      };
+    'id': id,
+    ...toApiBody(),
+    'copiesAvailable': copiesAvailable,
+    'deletedAt': deletedAt?.toIso8601String(),
+  };
 
   factory Book.fromJson(Map<String, dynamic> json) {
     // Ответ API: publisher / authors / genres — объекты.

@@ -9,13 +9,13 @@ import 'book_repository.dart';
 
 class PersistentBookRepository implements BookRepository {
   PersistentBookRepository(SharedPreferences prefs)
-      : _store = JsonListStore<Book>(
-          prefs: prefs,
-          key: 'books_v2',
-          fromJson: Book.fromJson,
-          toJson: (b) => b.toJson(),
-          seed: seedBooks,
-        ) {
+    : _store = JsonListStore<Book>(
+        prefs: prefs,
+        key: 'books_v2',
+        fromJson: Book.fromJson,
+        toJson: (b) => b.toJson(),
+        seed: seedBooks,
+      ) {
     _books = _store.load();
     _nextId = _books.fold<int>(0, (m, b) => b.id > m ? b.id : m) + 1;
   }
@@ -159,10 +159,7 @@ class PersistentBookRepository implements BookRepository {
   Future<bool> isIsbnTaken(String isbn, {int? excludeId}) async {
     final needle = _normIsbn(isbn);
     return _books.any(
-      (b) =>
-          !b.isDeleted &&
-          b.id != excludeId &&
-          _normIsbn(b.isbn) == needle,
+      (b) => !b.isDeleted && b.id != excludeId && _normIsbn(b.isbn) == needle,
     );
   }
 

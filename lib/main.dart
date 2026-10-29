@@ -26,9 +26,11 @@ import 'state/auth_notifier.dart';
 import 'state/author_list_notifier.dart';
 import 'state/book_list_notifier.dart';
 import 'state/genre_list_notifier.dart';
+import 'state/network_status.dart';
 import 'state/publisher_list_notifier.dart';
 import 'state/reader_list_notifier.dart';
 import 'widgets/inactivity_watcher.dart';
+import 'widgets/offline_banner.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,10 +38,12 @@ Future<void> main() async {
 
   final prefs = await SharedPreferences.getInstance();
   final tokens = AuthTokenStore();
+  final network = NetworkStatus();
 
   AuthNotifier? authRef;
   final dio = buildDio(
     tokenStore: tokens,
+    network: network,
     onRefresh: () async {
       final auth = authRef;
       if (auth == null) throw StateError('Auth not ready');
@@ -74,6 +78,7 @@ Future<void> main() async {
       providers: [
         Provider<Dio>.value(value: dio),
         Provider<AuthTokenStore>.value(value: tokens),
+        ChangeNotifierProvider<NetworkStatus>.value(value: network),
         Provider<AuthRepository>.value(value: authApi),
         ChangeNotifierProvider<AuthNotifier>.value(value: auth),
         Provider<BookRepository>.value(value: books),
@@ -84,9 +89,7 @@ Future<void> main() async {
         Provider<LoanRepository>.value(value: loans),
         Provider<UserRepository>.value(value: users),
         Provider<CatalogCache>.value(value: catalog),
-        ChangeNotifierProvider(
-          create: (_) => BookListNotifier(books)..load(),
-        ),
+        ChangeNotifierProvider(create: (_) => BookListNotifier(books)..load()),
         ChangeNotifierProvider(
           create: (_) => AuthorListNotifier(authors)..load(),
         ),
@@ -124,15 +127,14 @@ class LibraryApp extends StatelessWidget {
       title: 'Библиотека',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE91E8C),
-        ),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFE91E8C)),
         useMaterial3: true,
       ),
       routerConfig: router,
       builder: (context, child) {
+        final content = OfflineBanner(child: child ?? const SizedBox.shrink());
         if (!auth.isAuthenticated) {
-          return child ?? const SizedBox.shrink();
+          return content;
         }
         return InactivityWatcher(
           timeout: AuthNotifier.inactivityTimeout,
@@ -148,7 +150,7 @@ class LibraryApp extends StatelessWidget {
               );
             });
           },
-          child: child ?? const SizedBox.shrink(),
+          child: content,
         );
       },
     );

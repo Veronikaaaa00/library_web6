@@ -3,6 +3,7 @@ import '../utils/json_utils.dart';
 class Publisher {
   final int id;
   final String name;
+
   /// В UI — «страна»; в API это поле `city`.
   final String country;
   final int? foundedYear;
@@ -35,31 +36,31 @@ class Publisher {
   }
 
   Map<String, dynamic> toApiBody() => {
-        'name': name,
-        'city': country,
-        if (foundedYear != null) 'foundedYear': foundedYear,
-      };
+    'name': name,
+    'city': country,
+    if (foundedYear != null) 'foundedYear': foundedYear,
+  };
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'country': country,
-        'city': country,
-        'foundedYear': foundedYear,
-        'deletedAt': deletedAt?.toIso8601String(),
-      };
+    'id': id,
+    'name': name,
+    'country': country,
+    'city': country,
+    'foundedYear': foundedYear,
+    'deletedAt': deletedAt?.toIso8601String(),
+  };
 
   factory Publisher.fromJson(Map<String, dynamic> json) => Publisher(
-        id: asInt(json['id']),
-        name: asString(json['name']),
-        country: asString(
-          json['country']?.toString().isNotEmpty == true
-              ? json['country']
-              : json['city'],
-        ),
-        foundedYear: json['foundedYear'] == null
-            ? null
-            : asInt(json['foundedYear']),
-        deletedAt: asDateTime(json['deletedAt']),
-      );
+    id: asInt(json['id']),
+    name: asString(json['name']),
+    country: asString(
+      json['country']?.toString().isNotEmpty == true
+          ? json['country']
+          : json['city'],
+    ),
+    foundedYear: json['foundedYear'] == null
+        ? null
+        : asInt(json['foundedYear']),
+    deletedAt: asDateTime(json['deletedAt']),
+  );
 }

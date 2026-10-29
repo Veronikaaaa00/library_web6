@@ -40,8 +40,7 @@ class AuthNotifier extends ChangeNotifier {
   Role? get role => _user?.role;
   DateTime? get sessionStartedAt => _sessionStartedAt;
 
-  bool has(Role minimum) =>
-      _user != null && _user!.role.atLeast(minimum);
+  bool has(Role minimum) => _user != null && _user!.role.atLeast(minimum);
 
   Future<void> restore() async {
     final access = _prefs.getString(_kAccess);
@@ -135,10 +134,7 @@ class AuthNotifier extends ChangeNotifier {
   }
 
   Future<void> markActivity() async {
-    await _prefs.setString(
-      _kLastActivity,
-      DateTime.now().toIso8601String(),
-    );
+    await _prefs.setString(_kLastActivity, DateTime.now().toIso8601String());
   }
 
   DateTime? lastActivityAt() {

@@ -39,7 +39,9 @@ class GenreQuery {
     final parts = sortRaw.split(',');
     return GenreQuery(
       search: q['search'] ?? '',
-      sortField: parts.isNotEmpty && parts.first.isNotEmpty ? parts.first : 'name',
+      sortField: parts.isNotEmpty && parts.first.isNotEmpty
+          ? parts.first
+          : 'name',
       sortAscending: parts.length < 2 || parts[1] != 'desc',
       page: int.tryParse(q['page'] ?? '') ?? 1,
       size: int.tryParse(q['size'] ?? '') ?? 10,

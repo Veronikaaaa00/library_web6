@@ -30,23 +30,23 @@ class Genre {
   }
 
   Map<String, dynamic> toApiBody() => {
-        'name': name,
-        if (description != null) 'description': description,
-      };
+    'name': name,
+    if (description != null) 'description': description,
+  };
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'name': name,
-        'description': description,
-        'deletedAt': deletedAt?.toIso8601String(),
-      };
+    'id': id,
+    'name': name,
+    'description': description,
+    'deletedAt': deletedAt?.toIso8601String(),
+  };
 
   factory Genre.fromJson(Map<String, dynamic> json) => Genre(
-        id: asInt(json['id']),
-        name: asString(json['name']),
-        description: json['description'] == null
-            ? null
-            : asString(json['description']),
-        deletedAt: asDateTime(json['deletedAt']),
-      );
+    id: asInt(json['id']),
+    name: asString(json['name']),
+    description: json['description'] == null
+        ? null
+        : asString(json['description']),
+    deletedAt: asDateTime(json['deletedAt']),
+  );
 }

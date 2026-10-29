@@ -35,8 +35,9 @@ class _PublisherFormScreenState extends State<PublisherFormScreen> {
 
   Future<void> _load() async {
     if (widget.isEditing) {
-      _existing =
-          await context.read<PublisherRepository>().findById(widget.id!);
+      _existing = await context.read<PublisherRepository>().findById(
+        widget.id!,
+      );
       if (_existing != null) {
         _name.text = _existing!.name;
         _country.text = _existing!.country;
@@ -92,7 +93,9 @@ class _PublisherFormScreenState extends State<PublisherFormScreen> {
   Widget build(BuildContext context) {
     if (_loading) {
       return EntityFormScaffold(
-        title: widget.isEditing ? 'Изменить издательство' : 'Новое издательство',
+        title: widget.isEditing
+            ? 'Изменить издательство'
+            : 'Новое издательство',
         fields: const [],
         isLoading: true,
         onSubmit: () async => false,

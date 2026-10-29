@@ -56,53 +56,51 @@ class EntityTable<T> extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           child: DataTable(
-              sortColumnIndex: _sortColumnIndex(),
-              sortAscending: sortAscending,
-              headingRowColor: WidgetStatePropertyAll(
-                scheme.surfaceContainerHighest.withValues(alpha: 0.45),
-              ),
-              columns: [
-                if (onToggleSelect != null) const DataColumn(label: Text('')),
-                for (final column in columns)
-                  DataColumn(
-                    label: Text(column.label),
-                    numeric: column.numeric,
-                    onSort: column.sortField == null || onSort == null
-                        ? null
-                        : (columnIndex, ascending) =>
-                              onSort!(column.sortField!),
-                  ),
-                if (actions != null) const DataColumn(label: Text('Действия')),
-              ],
-              rows: [
-                for (final item in items)
-                  DataRow(
-                    selected: selected.contains(idOf(item)),
-                    color: (isDeleted?.call(item) ?? false)
-                        ? WidgetStatePropertyAll(
-                            scheme.errorContainer.withValues(alpha: 0.25),
-                          )
-                        : null,
-                    cells: [
-                      if (onToggleSelect != null)
-                        DataCell(
-                          Checkbox(
-                            value: selected.contains(idOf(item)),
-                            onChanged: (_) => onToggleSelect!(idOf(item)),
-                          ),
+            sortColumnIndex: _sortColumnIndex(),
+            sortAscending: sortAscending,
+            headingRowColor: WidgetStatePropertyAll(
+              scheme.surfaceContainerHighest.withValues(alpha: 0.45),
+            ),
+            columns: [
+              if (onToggleSelect != null) const DataColumn(label: Text('')),
+              for (final column in columns)
+                DataColumn(
+                  label: Text(column.label),
+                  numeric: column.numeric,
+                  onSort: column.sortField == null || onSort == null
+                      ? null
+                      : (columnIndex, ascending) => onSort!(column.sortField!),
+                ),
+              if (actions != null) const DataColumn(label: Text('Действия')),
+            ],
+            rows: [
+              for (final item in items)
+                DataRow(
+                  selected: selected.contains(idOf(item)),
+                  color: (isDeleted?.call(item) ?? false)
+                      ? WidgetStatePropertyAll(
+                          scheme.errorContainer.withValues(alpha: 0.25),
+                        )
+                      : null,
+                  cells: [
+                    if (onToggleSelect != null)
+                      DataCell(
+                        Checkbox(
+                          value: selected.contains(idOf(item)),
+                          onChanged: (_) => onToggleSelect!(idOf(item)),
                         ),
-                      for (final column in columns)
-                        DataCell(column.build(item)),
-                      if (actions != null)
-                        DataCell(
-                          Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: actions!(item),
-                          ),
+                      ),
+                    for (final column in columns) DataCell(column.build(item)),
+                    if (actions != null)
+                      DataCell(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: actions!(item),
                         ),
-                    ],
-                  ),
-              ],
+                      ),
+                  ],
+                ),
+            ],
           ),
         ),
       ),

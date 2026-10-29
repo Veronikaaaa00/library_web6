@@ -48,21 +48,21 @@ class Reader {
   }
 
   Map<String, dynamic> toApiBody() => {
-        'fullName': fullName,
-        'email': email,
-        'phone': phone,
-      };
+    'fullName': fullName,
+    'email': email,
+    'phone': phone,
+  };
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'firstName': firstName,
-        'lastName': lastName,
-        'fullName': fullName,
-        'email': email,
-        'phone': phone,
-        'card': card.toJson(),
-        'deletedAt': deletedAt?.toIso8601String(),
-      };
+    'id': id,
+    'firstName': firstName,
+    'lastName': lastName,
+    'fullName': fullName,
+    'email': email,
+    'phone': phone,
+    'card': card.toJson(),
+    'deletedAt': deletedAt?.toIso8601String(),
+  };
 
   factory Reader.fromJson(Map<String, dynamic> json) {
     var firstName = asString(json['firstName']);

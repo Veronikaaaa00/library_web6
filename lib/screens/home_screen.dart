@@ -28,9 +28,8 @@ class HomeScreen extends StatelessWidget {
                 Text(
                   'Здравствуйте, ${auth.user?.fullName ?? ''}',
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                  style: Theme.of(context).textTheme.headlineMedium
+                      ?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 8),
                 Text(
@@ -49,9 +48,7 @@ class HomeScreen extends StatelessWidget {
                   onPressed: () => context.go('/loans'),
                   icon: const Icon(Icons.assignment),
                   label: Text(
-                    Permissions.canManageLoans(role)
-                        ? 'Выдачи'
-                        : 'Мои выдачи',
+                    Permissions.canManageLoans(role) ? 'Выдачи' : 'Мои выдачи',
                   ),
                 ),
                 if (Permissions.canManageReaders(role)) ...[

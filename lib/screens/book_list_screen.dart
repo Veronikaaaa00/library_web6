@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../core/api_exceptions.dart';
+import '../core/breakpoints.dart';
 import '../core/permissions.dart';
 import '../models/book.dart';
 import '../models/book_query.dart';
@@ -94,6 +95,7 @@ class _BookListScreenState extends State<BookListScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        constraints: const BoxConstraints(maxWidth: 420),
         title: const Text('Удалить книгу?'),
         content: Text(
           '«${book.title}» будет скрыта из списка (логическое удаление).',
@@ -120,6 +122,7 @@ class _BookListScreenState extends State<BookListScreen> {
     final ok = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
+        constraints: const BoxConstraints(maxWidth: 420),
         title: const Text('Удалить выбранные?'),
         content: Text(
           'Будет логически удалено записей: ${notifier.selected.length}.',
@@ -147,7 +150,7 @@ class _BookListScreenState extends State<BookListScreen> {
     final auth = context.watch<AuthNotifier>();
     final canManage = Permissions.canManageCatalog(auth.role);
     final query = notifier.query;
-    final wide = MediaQuery.sizeOf(context).width >= 600;
+    final wide = Breakpoints.isWide(context);
 
     return AppScaffold(
       title: 'Книги',
@@ -233,6 +236,8 @@ class _BookListScreenState extends State<BookListScreen> {
                               onTap: () => context.go('/books/${b.id}'),
                               child: Text(
                                 b.title,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(
                                   color: Theme.of(context).colorScheme.primary,
                                   fontWeight: FontWeight.w600,
@@ -417,9 +422,8 @@ class _BookListScreenState extends State<BookListScreen> {
                 await context.read<BookListNotifier>().hardDelete(book.id);
               } on ApiException catch (e) {
                 if (mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text(e.message)),
-                  );
+                  ScaffoldMessenger.of(context)
+                      .showSnackBar(SnackBar(content: Text(e.message)));
                 }
               }
             },

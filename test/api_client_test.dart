@@ -31,9 +31,7 @@ Dio _mockDio(Future<Response<dynamic>> Function(RequestOptions) handler) {
             sink.resolve(response);
           }
         } catch (e) {
-          sink.reject(
-            DioException(requestOptions: options, error: e),
-          );
+          sink.reject(DioException(requestOptions: options, error: e));
         }
       },
     ),
@@ -132,9 +130,7 @@ void main() {
     });
 
     final repo = ApiBookRepository(dio);
-    final page = await repo.find(
-      const BookQuery(search: 'война'),
-    );
+    final page = await repo.find(const BookQuery(search: 'война'));
     expect(page.items.single.title, 'Война и мир');
     expect(page.items.single.publisherId, 2);
   });

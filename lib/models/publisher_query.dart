@@ -46,7 +46,9 @@ class PublisherQuery {
     return PublisherQuery(
       search: q['search'] ?? '',
       country: (q['country'] ?? '').isEmpty ? null : q['country'],
-      sortField: parts.isNotEmpty && parts.first.isNotEmpty ? parts.first : 'name',
+      sortField: parts.isNotEmpty && parts.first.isNotEmpty
+          ? parts.first
+          : 'name',
       sortAscending: parts.length < 2 || parts[1] != 'desc',
       page: int.tryParse(q['page'] ?? '') ?? 1,
       size: int.tryParse(q['size'] ?? '') ?? 10,
@@ -84,12 +86,12 @@ class PublisherQuery {
 
   @override
   int get hashCode => Object.hash(
-        search,
-        country,
-        sortField,
-        sortAscending,
-        page,
-        size,
-        includeDeleted,
-      );
+    search,
+    country,
+    sortField,
+    sortAscending,
+    page,
+    size,
+    includeDeleted,
+  );
 }

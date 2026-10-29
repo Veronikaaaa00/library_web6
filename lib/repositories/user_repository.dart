@@ -21,18 +21,16 @@ class UserRepository {
       });
 
   Future<AppUser> updateRole(int id, Role role) => guard(() async {
-        final response = await _dio.patch(
-          '/users/$id',
-          data: {'role': role.apiValue},
-        );
-        return AppUser.fromJson(
-          Map<String, dynamic>.from(response.data as Map),
-        );
-      });
+    final response = await _dio.patch(
+      '/users/$id',
+      data: {'role': role.apiValue},
+    );
+    return AppUser.fromJson(Map<String, dynamic>.from(response.data as Map));
+  });
 
   Future<Map<String, int>> stats() => guard(() async {
-        final response = await _dio.get('/stats');
-        final data = Map<String, dynamic>.from(response.data as Map);
-        return data.map((k, v) => MapEntry(k, (v as num).toInt()));
-      });
+    final response = await _dio.get('/stats');
+    final data = Map<String, dynamic>.from(response.data as Map);
+    return data.map((k, v) => MapEntry(k, (v as num).toInt()));
+  });
 }
