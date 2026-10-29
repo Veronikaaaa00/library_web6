@@ -41,7 +41,7 @@ jobs:
         run: |
           flutter build web --release \
             --base-href /library_web6/ \
-            --dart-define=API_BASE_URL=${{ vars.API_BASE_URL || 'http://localhost:8080/api' }}
+            --dart-define=API_BASE_URL=${{ vars.API_BASE_URL || 'https://library-mock-api.onrender.com/api' }}
 
       - name: SPA fallback for GitHub Pages
         run: cp build/web/index.html build/web/404.html
